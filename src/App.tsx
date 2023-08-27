@@ -44,6 +44,7 @@ function App () {
   const [qrCode, setQrCode] = useState(null)
 
   const qrCodeRef = useRef<HTMLDivElement>()
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const handleChange = (key: string, newValue: string): void => {
     if (Object.prototype.hasOwnProperty.call(attributes, key)) {
@@ -237,13 +238,13 @@ function App () {
                                     <label style={{ width: '80px', textAlign: 'left' }} htmlFor="size" className="form__label">Margin</label>
                                     <Slider name="margin"
                                             id="margin"
-                                            defaultValue={300}
+                                            defaultValue={20}
                                             marks
                                             sx={{ width: '100%' }}
                                             value={attributes.margin}
                                             step={10}
                                             min={0}
-                                            max={1500}
+                                            max={100}
                                             aria-label="Margin"
                                             valueLabelDisplay="auto"
                                             onChange={(_event: Event, newValue) => {
@@ -281,10 +282,10 @@ function App () {
                 </div>
 
                 <div ref={qrCodeRef} className="card">
-                    {qrCode !== null && <img width={attributes.size} height={attributes.size} src={`data:image/svg+xml;utf8,${encodeURIComponent(qrCode)}`} />}
+                    {qrCode !== null && <img style={{ maxWidth: '100%', height: 'auto' }} width={attributes.size} height={attributes.size} src={`data:image/svg+xml;utf8,${encodeURIComponent(qrCode)}`} />}
                 </div>
 
-                <Stack spacing={2} direction="row" justifyContent={'center'}>
+                <Stack spacing={16} direction="row" justifyContent={'center'} className={'app-buttons'}>
                     <Button
                         style={{ lineHeight: '40px' }}
                         onClick={() => {
@@ -310,18 +311,36 @@ function App () {
                         style={{ lineHeight: '40px' }}
                         onClick={() => {
                           if (qrCode) {
-                            const svgData = qrCode // Assuming qrCode contains the SVG content
+                            const canvas = canvasRef.current
 
-                            if (svgData) {
-                              const blob = new Blob([svgData], { type: 'image/png' })
-                              const url = URL.createObjectURL(blob)
+                            if (canvas) {
+                              const ctx = canvas.getContext('2d')
+                              if (ctx) {
+                                const img = new Image()
 
-                              const link = document.createElement('a')
-                              link.href = url
-                              link.download = attributes.text + '.png' // Set the desired file name
-                              link.click()
+                                // after the image was loaded
+                                img.onload = () => {
+                                  canvas.width = img.width
+                                  canvas.height = img.height
+                                  ctx.drawImage(img, 0, 0)
 
-                              URL.revokeObjectURL(url)
+                                  canvas.toBlob((blob) => {
+                                    if (blob) {
+                                      const url = URL.createObjectURL(blob)
+
+                                      const link = document.createElement('a')
+                                      link.href = url
+                                      link.download = attributes.text + '.png' // Set the desired file name
+                                      link.click()
+
+                                      URL.revokeObjectURL(url)
+                                    }
+                                  }, 'image/png')
+                                }
+
+                                // set the image to the canvas
+                                img.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(qrCode)}`
+                              }
                             }
                           }
                         }}
@@ -330,6 +349,7 @@ function App () {
                     </Button>
 
                 </Stack>
+                <canvas ref={canvasRef} style={{ display: 'none' }} />
             </div>
         </ThemeProvider>
   )

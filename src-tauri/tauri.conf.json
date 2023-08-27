@@ -34,8 +34,8 @@
       "targets": "all",
       "identifier": "com.codekraft.dev",
       "icon": [
-        "../public/qr_code_2_black_24dp.png",
-        "../public/qr_code_2_black_24dp.svg",
+        "public/qr_code_2_black_24dp.png",
+        "public/qr_code_2_black_24dp.svg",
         "icons/icon.ico"
       ]
     },
