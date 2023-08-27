@@ -1,0 +1,51 @@
+html,body {
+    font-family: 'Roboto', Arial, Helvetica, serif;
+    background-color: #222;
+    height: 100vh;
+}
+
+.container {
+    margin: 30px 0;
+    height: calc( 100vh - 60px );
+    padding: 6px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+
+    .form_container {
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+        input {
+            width: 100%;
+        }
+    }
+}
+
+.card {
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    width: 100%;
+    height: auto;
+    margin-top: 12px;
+    box-sizing: border-box;
+}
+
+#qrcode {
+    width:100%;
+    height:auto;
+
+
+    > * {
+        display: block;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        margin: auto;
+    }
+}
+
